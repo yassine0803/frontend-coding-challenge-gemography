@@ -27,6 +27,7 @@ const useFetchRepositories = ({currentPage}) => {
             cancelToken: new axios.CancelToken(c => cancel = c)
         }).then(res =>{
             setRepositories(res.data.items); 
+            setLoading(false);
         }).catch(e =>{
             if(axios.isCancel(e)) return;
             setError(true);
