@@ -7,9 +7,17 @@ import { makeStyles } from '@material-ui/core/styles';
       marginTop: 40,
     },
 }));
+
 const Repositories = ({repositories, loading, error, setCurrentPage}) => {
-    console.log(repositories);
     const classes = useStyles();
+
+    //currentPage++ when reach to the bottom
+    window.onscroll = () =>{
+        if(window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight && !loading){
+            setCurrentPage(prevCurrenPage => prevCurrenPage + 1);
+        }
+    }
+
     return ( 
         <Container maxidth="lg" className={classes.root}>
             {repositories.length > 0 && repositories.map((repository)=>(

@@ -6,7 +6,7 @@ import Repositories from "./components/Repositories/Repositories";
 const App = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const {repositories, loading, error}=useFetchRepositories(currentPage);
-
+  console.log(currentPage);
   return (  
     <div>
       <Navbar />

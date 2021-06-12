@@ -2,13 +2,13 @@ import {useState, useEffect} from 'react';
 import axios from 'axios';
 
 
-const useFetchRepositories = ({currentPage}) => {
+const useFetchRepositories = (currentPage) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [repositories, setRepositories] = useState([]);
 
     const url = `${process.env.REACT_APP_API_URL}/search/repositories`;
-    console.log(url);
+
     const params = {
         q: 'created:>=2017-10-22', 
         page: currentPage,
@@ -16,24 +16,31 @@ const useFetchRepositories = ({currentPage}) => {
         order: 'desc',
     }
 
-    useEffect(() => {
+    let cancel;
+
+    //fetch repositories
+    const fetchData = () =>{
+        console.log(currentPage);
         setLoading(true);
         setError(false);
-        let cancel;
         axios({
             method: 'GET',
             url: url,
             params: params,
             cancelToken: new axios.CancelToken(c => cancel = c)
         }).then(res =>{
-            setRepositories(res.data.items); 
+            setRepositories([...repositories,...res.data.items]); 
             setLoading(false);
         }).catch(e =>{
             if(axios.isCancel(e)) return;
             setError(true);
         })
+    }
+    
+    useEffect(() => {
+        fetchData();
         return () => cancel()
-    },[currentPage]);
+    }, [currentPage])
 
     return {loading, error, repositories};
 }
