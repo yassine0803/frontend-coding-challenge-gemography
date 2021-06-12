@@ -18,6 +18,14 @@ const useFetchRepositories = (currentPage) => {
 
     let cancel;
 
+    //remove duplicates repos
+    const removeDuplicate = (data)=>{
+        let newData = [...repositories, ...data];
+        newData = Array.from(new Set(newData.map(JSON.stringify))).map(JSON.parse);
+        setRepositories(newData);
+        setLoading(false);
+    }
+
     //fetch repositories
     const fetchData = () =>{
         console.log(currentPage);
@@ -29,8 +37,7 @@ const useFetchRepositories = (currentPage) => {
             params: params,
             cancelToken: new axios.CancelToken(c => cancel = c)
         }).then(res =>{
-            setRepositories([...repositories,...res.data.items]); 
-            setLoading(false);
+            removeDuplicate(res.data.items); 
         }).catch(e =>{
             if(axios.isCancel(e)) return;
             setError(true);
