@@ -23,7 +23,6 @@ const useFetchRepositories = (currentPage) => {
         let date = new Date();
         date.setDate(date.getDate() - 30);
         date = moment(date).format("YYYY-MM-DD");
-        console.log(date);
         return date;
     }
 
@@ -41,7 +40,6 @@ const useFetchRepositories = (currentPage) => {
 
     //fetch repositories
     const fetchData = () =>{
-        console.log(currentPage);
         setLoading(true);
         setError(false);
         axios({
