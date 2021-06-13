@@ -1,22 +1,14 @@
 import {useState, useEffect} from 'react';
 import axios from 'axios';
-
+import moment from 'moment';
 
 const useFetchRepositories = (currentPage) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [repositories, setRepositories] = useState([]);
 
-    const url = `${process.env.REACT_APP_API_URL}/search/repositories`;
-
-    const params = {
-        q: 'created:>=2017-10-22', 
-        page: currentPage,
-        sort: 'stars',
-        order: 'desc',
-    }
-
     let cancel;
+    let dateBefore30Days;
 
     //remove duplicates repos
     const removeDuplicate = (data)=>{
@@ -24,6 +16,27 @@ const useFetchRepositories = (currentPage) => {
         newData = Array.from(new Set(newData.map(JSON.stringify))).map(JSON.parse);
         setRepositories(newData);
         setLoading(false);
+    }
+
+    //get date before 30 day
+    const getDateBefore30Days = ()=>{
+        let date = new Date();
+        date.setDate(date.getDate() - 30);
+        date = moment(date).format("YYYY-MM-DD");
+        console.log(date);
+        return date;
+    }
+
+    
+    dateBefore30Days = getDateBefore30Days();
+    
+    const url = `${process.env.REACT_APP_API_URL}/search/repositories`;
+
+    const params = {
+        q: 'created:>='+dateBefore30Days, 
+        page: currentPage,
+        sort: 'stars',
+        order: 'desc',
     }
 
     //fetch repositories
